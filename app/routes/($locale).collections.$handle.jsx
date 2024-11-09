@@ -29,6 +29,22 @@ export async function loader(args) {
   return defer({...deferredData, ...criticalData});
 }
 
+const generateSeo = (collection) => {
+  let seo = {
+    title: 'Default collection title',
+    description: 'Default collection description'
+  }
+
+  if(collection){
+    seo.title = collection.title,
+    seo.description = collection.description
+  }
+
+  seo.description = seo.description.length >155? `${seo.description}...`:seo.description;
+
+  return seo;
+}
+
 /**
  * Load data necessary for rendering content above the fold. This is the critical data
  * needed to render the page. If it's unavailable, the whole page should 400 or 500 error.
@@ -57,9 +73,11 @@ async function loadCriticalData({context, params, request}) {
       status: 404,
     });
   }
+  const seo = generateSeo(collection);
 
   return {
     collection,
+    seo
   };
 }
 
